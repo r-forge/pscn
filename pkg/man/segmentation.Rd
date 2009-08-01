@@ -6,17 +6,17 @@
 This function determines change points after the smoothing function.
 }
 \usage{
-segmentation(samplename, chrs = 1:23, gender = NULL, MIN.SNPS = 20, regroup.percent = -1, combine.alpha = 0.05, ...)
+segmentation(samplename, gender = NULL, ...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{samplename}{ a name indicates where the data is sampled from, eg. patient ID }
-  \item{chrs}{indicates which chromosomes of the sample are being segmented}
+  \item{chrs}{indicates which chromosomes of the sample are being segmented.  (Default=1:23)}
   \item{gender}{This function will determine the gender of the person where the data comes from if 23 is included in the "chrs" no match what input of "gender" is.  However, if 23 is not included in the chrs, the gender of the person where data comes from will be determined by the gender input.}
-  \item{MIN.SNPS}{specifies the minimum number of SNPs in a segment.}
+  \item{MIN.SNPS}{specifies the minimum number of SNPs in a segment. (Default=20)}
   \item{MIN.HET.SNPS}{specifies the minimum number of heterozyous SNPs in a segment.} 
-  \item{regroup.percent}{when regroup using Bfrequency, if the obtained percent of heterozyous SNPs is less than the regroup.percent, some current homozyous SNPs will be classified as heterozyous.  The default value here is "-1", that is, this criterion is not used as default. If would like to use it, can specify some value, such as "0.2".}
-  \item{combine.alpha}{the significance level of hypotheses tesing for combining adjacent segments. }
+  \item{regroup.percent}{When regrouping using Bfrequency, if the obtained percent of heterozyous SNPs is less than the regroup.percent, some current homozyous SNPs will be classified as heterozyous.  The default value here is "-1", that is, this criterion is not used as default. If would like to use it, can specify some value, such as "0.2".}
+  \item{combine.alpha}{the significance level of hypotheses tesing for combining adjacent segments. (Default=0.05)}
   \item{verbose}{if TRUE, print out process during the run}
   \item{DALPHA.THRESH}{The critical value for being a change point if the $\alpha$ value of the current SNP is
 different from the previous SNP by DALPHA.THRESH.}
@@ -30,13 +30,21 @@ the difference of beta values between the two segments is smaller than BETA.THRE
   \item{FRAC.CHPTS}{used to calculate DALPHA.THRESH and BETA.THRESH if they are not specified.}
 }
 \details{
-This function first uses striengent criteria to find change points. Then these roughly found segments are regrouped using Bfreqency because in each segment, there are at most four clusters of Bfreqence. After that, adjacent segments are tested to determine whether they can be combined.  
+This function first uses a criteria based on absolute differences to find change points. Then these roughly found segments are regrouped using Bfreqency because in each segment, there are at most four clusters of Bfrequency. After that, adjacent segments are tested to determine whether they can be combined.  
 }
 \value{
 It returns files samplename.Chr1.Segment.Rdata, samplename.Chr1.pscn.Rdata, ect.
 }
-\references{ ~put references to the literature/web site here ~ }
-\author{ ~~who you are~~ }
+\author{
+Hao Chen, Haipeng Xing, and Nancy R. Zhang
+
+Maintainer:  Hao Chen (haochen@stanford.edu)
+}
+\references{
+Chen, H., Xing, H. and Zhang, N.R. (2009) Estimation of parent specific DNA copy number
+in tumors using high-density genotyping arrays.  Under Review, manuscript can be downloaded from www-stat.stanford.edu/~nzhang/.
+
+}
 \note{follows the result of \link{smoothing}.  This function can only be run after the function \link{smoothing}.}
 \seealso{
 Raw logR and Bfreqency data should use be analyzed using \link{smoothing} first, then follows this function. \link{pscnlist} follow this function to generate allele specific copy numbers.  \link{pscn.plot} is the plot function to view a variety of results.  

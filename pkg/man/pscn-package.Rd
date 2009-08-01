@@ -14,19 +14,22 @@ Package: \tab pscn\cr
 Type: \tab Package\cr
 Version: \tab 1.0\cr
 Date: \tab 2009-05-03\cr
-License: \tab What license is it under?\cr
+License: \tab Academic\cr
 LazyLoad: \tab yes\cr
 }
-First prepare a file four columns "Chromosome ID" (eg. any number from 1 to 23), "SNP Position (bp)", "logR" and "Bfrequency". The column names should be "Chr", "Position", "logR" and "bfreq". Then use function \code{\link{smoothing}} to estimate parent-specify copy numbers. After that, use \code{\link{segmentation}} to determine change points and \code{\link{pscnlist}} to get a table showing major and minor copy numbers. \code{\link{pscn.plot}} is the plot function to view a variety of results.   } 
+To use the functions in this package, first prepare for your data a file four columns "Chromosome ID" (eg. any number from 1 to 23), "SNP Position (bp)", "logR" and "Bfrequency". The column names should be, respectively, "Chr", "Position", "logR" and "bfreq". 
+Then use the functions \code{\link{smoothing}} to estimate parent-specify copy numbers. After that, use \code{\link{segmentation}} to determine change points and \code{\link{pscnlist}} to get a table showing major and minor copy numbers. 
+\code{\link{pscn.plot}} is the plot function to view a variety of results.   } 
 }
 \author{
-Who wrote it
+Hao Chen, Haipeng Xing, and Nancy R. Zhang
 
-Maintainer: Who to complain to <yourfault@somewhere.net>
-~~ The author and/or maintainer of the package ~~
+Maintainer:  Hao Chen (haochen@stanford.edu)
 }
 \references{
-~~ Literature or other references for background information ~~
+Chen, H., Xing, H. and Zhang, N.R. (2009) Estimation of parent specific DNA copy number
+in tumors using high-density genotyping arrays.  Under Review, manuscript can be downloaded from www-stat.stanford.edu/~nzhang/.
+
 }
 ~~ Optionally other standard keywords, one per line, from file KEYWORDS in ~~
 ~~ the R documentation directory ~~

@@ -32,8 +32,16 @@ In this step, the segments with no change are first determined using a modified 
 \value{
 It returns three .txt files named samplename.longlist.txt, samplename.longlist.update.txt, samplename.shortlist.txt 
 }
-\references{ ~put references to the literature/web site here ~ }
-\author{ ~~who you are~~ }
+\author{
+Hao Chen, Haipeng Xing, and Nancy R. Zhang
+
+Maintainer:  Hao Chen (haochen@stanford.edu)
+}
+\references{
+Chen, H., Xing, H. and Zhang, N.R. (2009) Estimation of parent specific DNA copy number
+in tumors using high-density genotyping arrays.  Under Review, manuscript can be downloaded from www-stat.stanford.edu/~nzhang/.
+
+}
 \note{follows the result of \link{segmentation}.  this function can only be run after the function \link{segmentation}.}
 \seealso{
  Raw logR and Bfreqency data should use be analyzed using \link{smoothing} and \link{segmentation} first, then follows this function.  \link{pscn.plot} is the plot function to view a variety of results.  
@@ -44,5 +52,4 @@ It returns three .txt files named samplename.longlist.txt, samplename.longlist.u
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
-\keyword{ ~kwd1 }
-\keyword{ ~kwd2 }% __ONLY ONE__ keyword per line
+

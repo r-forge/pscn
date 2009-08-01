@@ -1,39 +1,44 @@
 \name{smoothing}
 \alias{smoothing}
 %- Also NEED an '\alias' for EACH other topic documented here.
-\title{Smoothing}
+\title{BCMIX Smoothing for allele-specific DNA copy number data.}
 \description{
 This function uses Bounded Complexity MIXture (BCMIX) algorithm to estimate parent-specify copy numbers.
 }
 \usage{
-smoothing(samplename, inputdata, platform = "Unknown", sm.plot = FALSE, ...)
+smoothing(samplename, inputdata,...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{samplename}{a name indicates where the data is sampled from, eg. patient ID}
-  \item{inputdata}{a file with four columns "Chromosome ID" (eg. any number from 1 to 23), "SNP Position (bp)", "logR" and "Bfrequency". The column names should be "Chr", "Position", "logR" and "bfreq". }
-  \item{platform}{specifies where is data is from, eg. Illumina.}
-  \item{sm.plot}{if TRUE, then the interim results will be ploted }
-  \item{hyper}{a txt file specifies initial hyper parameters}
-  \item{mixstate}{a txt file specifies initial states of SNPs}
-  \item{niters}{!! not sure about its function }
-  \item{nBIMIXiters}{specifies the number of loops for BIMIX }
-  \item{K}{!! not sure about its function }
-  \item{M}{!! not sure about its function }
-  \item{outerloop}{specifies the number of loops for a complete run of BIMIX and state update }
-  \item{selectHyper}{!! not sure about its function }
-  \item{verbose}{if TRUE, print out process during the run }
-  \item{save.interim}{if TRUE, interim cnvobj will be saved as .Rdata file}
+  \item{samplename}{A name indicates where the data is sampled from, eg. patient ID}
+  \item{inputdata}{A file with four columns "Chromosome ID" (eg. any number from 1 to 23), "SNP Position (bp)", "logR" and "Bfrequency". The column names should be "Chr", "Position", "logR" and "bfreq". }
+  \item{platform}{Specifies where is data is from, eg. Illumina. (Default="Unknown")}
+  \item{sm.plot}{If TRUE, then the interim results will be plotted.  (Default=FALSE) }
+  \item{hyper}{A txt file specifies initial hyper parameters, if null (default), then the initial hyperparameters are set using moment estimators.}
+  \item{mixstate}{A txt file specifying initial states of SNPs, if null (default), then the initial states are generated via K-means clustering ignoring position information. }
+  \item{niters}{Specifies how many iterations to do for hyperparameter estimation. (Default=2)}
+  \item{nBIMIXiters}{Specifies the number of iterations for BIMIX.  (Default=10) }
+  \item{K}{'M' parameter for BCMIX.}
+  \item{M}{'K' parameter for BCMIX.}
+   \item{selectHyper}{Which hyperparameters to update via EM?  If "1", then update only the transition matrix.  If "2", then update everything but the transition matrix.  If "3", then update all hyperparameters.  If "4", then update only the error covariance matrices.  (Default=4)}
+  \item{verbose}{if TRUE (default), print out process during the run }
+  \item{save.interim}{if TRUE, interim cnvobj will be saved as .Rdata file.  (Default=FALSE)}
 }
 \details{
     This function takes 2-3 minutes for a typical file containing logR and Bfrequency of SNP data from one human choromosome.
 }
 \value{
-It returns files samplename.Chr1.Smooth.Rdata ect.
+It saves files samplename.Chr1.Smooth.Rdata etc.
 }
-\references{ ~put references to the literature/web site here ~ }
-\author{ ~~who you are~~ }
-\note{ ~~further notes~~ 
+\author{
+Hao Chen, Haipeng Xing, and Nancy R. Zhang
+
+Maintainer:  Hao Chen (haochen@stanford.edu)
+}
+\references{
+Chen, H., Xing, H. and Zhang, N.R. (2009) Estimation of parent specific DNA copy number
+in tumors using high-density genotyping arrays.  Under Review, manuscript can be downloaded from www-stat.stanford.edu/~nzhang/.
+
 }
 \seealso{
 this function follows with \code{\link{segmentation}} and \code{\link{pscnlist}}. 
@@ -45,5 +50,4 @@ data(ex0)  # this file contain four columns "Chromosome ID", "SNP Position (bp)"
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
-\keyword{ ~kwd1 }
-\keyword{ ~kwd2 }% __ONLY ONE__ keyword per line
+
