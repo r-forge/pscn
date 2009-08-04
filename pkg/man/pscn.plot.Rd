@@ -1,7 +1,7 @@
 \name{pscn.plot}
 \alias{pscn.plot}
 %- Also NEED an '\alias' for EACH other topic documented here.
-\title{Plot function for parent specific copy number estimation (pscn) results.}
+\title{Plot function used to visualize parent specific copy number estimation (pscn) results.}
 \description{
 This function provides a variety of plots showing results of a pscn analysis after \code{\link{smoothing}}, \code{\link{segmentation}} and \code{\link{pscnlist}}.   
 }
