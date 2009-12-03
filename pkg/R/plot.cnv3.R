@@ -41,6 +41,9 @@ function(mydata, chrid, pos=FALSE, gaincol="red", mainlab=NULL, normalcol="green
           valueM = as.numeric(strsplit(as.character(mydata$Value[j]),"/")[[1]][1])
           major = c(major,valueM)
           minor = c(minor,mu0)
+        }else{
+          major = c(major, mu0)
+          minor = c(minor, mu0)
         }  
       }
     }

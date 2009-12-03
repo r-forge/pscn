@@ -15,6 +15,12 @@ function(  cnvobj, verbose=TRUE, start.from.seg=FALSE, merge=TRUE,
         cat("Unable to segment: need to run smooth.cnv2d first.\n")
         return
    }
+   # Hao added Nov. 16, 2009
+   if (!is.null(cnvobj$newstate)){
+    mixstate = cnvobj$newstate
+   }else{
+    mixstate = cnvobj$mixstate
+   }
    
    n=length(cnvobj)
    
@@ -90,6 +96,7 @@ function(  cnvobj, verbose=TRUE, start.from.seg=FALSE, merge=TRUE,
     
 # Hao 09/09/2008 add 'if' and 'else'   
     if (length(finalchpts)>0){
+    
         nfinal = length(finalchpts)
         segalpha = rep(0,nfinal+1)
         segalpha[1] = mean(cnvobj$theta[1:finalchpts[1],1])
@@ -98,32 +105,31 @@ function(  cnvobj, verbose=TRUE, start.from.seg=FALSE, merge=TRUE,
         seglen = rep(0,nfinal+1)
         seglen[1] = finalchpts[1]
         seghet = rep(0,nfinal+1)
-        seghet[1] = sum(cnvobj$mixstate[1:finalchpts[1]]==2 | cnvobj$mixstate[1:finalchpts[1]]==3)
+        seghet[1] = sum(mixstate[1:finalchpts[1]]==2 | mixstate[1:finalchpts[1]]==3)
         if(nfinal>1){
             for(i in c(1:(nfinal-1))){
                 segalpha[i+1] = mean(cnvobj$theta[finalchpts[i]:finalchpts[i+1],1])
                 segbeta[i+1] = mean(cnvobj$theta[finalchpts[i]:finalchpts[i+1],2])
                 seglen[i+1] = finalchpts[i+1]-finalchpts[i]+1
-                seghet[i+1] = sum(cnvobj$mixstate[finalchpts[i]:finalchpts[i+1]]==2 | cnvobj$mixstate[finalchpts[i]:finalchpts[i+1]]==3)
+                seghet[i+1] = sum(mixstate[finalchpts[i]:finalchpts[i+1]]==2 | mixstate[finalchpts[i]:finalchpts[i+1]]==3)
       
             }
         }
         segalpha[nfinal+1] = mean(cnvobj$theta[finalchpts[nfinal]:length(cnvobj),1])
         segbeta[nfinal+1] = mean(cnvobj$theta[finalchpts[nfinal]:length(cnvobj),2])
         seglen[nfinal+1] = length(cnvobj) - finalchpts[nfinal]
-        seghet[nfinal+1] = sum(cnvobj$mixstate[finalchpts[nfinal]:length(cnvobj)]==2 | cnvobj$mixstate[finalchpts[nfinal]:length(cnvobj)]==3)
+        seghet[nfinal+1] = sum(mixstate[finalchpts[nfinal]:length(cnvobj)]==2 | mixstate[finalchpts[nfinal]:length(cnvobj)]==3)
       
         cbind(c(0,finalchpts),segalpha,segbeta,seglen,seghet)
         
-      
+                    
         
         throwchpt = rep(0,nfinal)
         keepchpt = rep(0,nfinal) # can veto a throw.
         for(i in c(2:(nfinal+1))){
             dalpha = abs(segalpha[i]-segalpha[i-1])
             dbeta = abs(segbeta[i]-segbeta[i-1])
-            
-            if(dalpha<ALPHA.THRESH && dbeta<BETA.THRESH){
+             if(dalpha<ALPHA.THRESH && dbeta<BETA.THRESH){
                 # Not enough difference between the two segments.
                 throwchpt[i-1] = 1
             } else { 
@@ -172,7 +178,11 @@ function(  cnvobj, verbose=TRUE, start.from.seg=FALSE, merge=TRUE,
                     }   
                 }
             }
+            
         }
+        
+        
+     
  # Hao 09/16/2008 add two more criterions to throw points
        if (finalchpts[1]<=MIN.SNPS){
           throwchpt[1] = 1
@@ -190,19 +200,16 @@ function(  cnvobj, verbose=TRUE, start.from.seg=FALSE, merge=TRUE,
   #      print(cbind(c(finalchpts,0),segalpha,segbeta,seglen,seghet,c(throwchpt,0)),digits=2)
         mergedchpts = finalchpts[which(throwchpt==0 | keepchpt)]
         
-#     estCP2 = rep(0,n)
-#    estCP2[mergedchpts] = 1
-#    estCP3=rep(0,n)
-#    estCP3[finalchpts]=1
-#    #png(paste("sample",ind,"_",xlim[1],"_",xlim[2],".png",sep=""), height=1200, width=800)
-#    par(mfrow=c(4,1))
-#    plot(cnvobj,which.plot="allele1",loc=loc, seg=F)
-#    #plot(cnvobj,which.plot="allele2",loc=loc)
-# #   plot(cnvobj,which.plot="alpha",loc=loc)
-#    plot(cnvobj,which.plot="beta",loc=loc,seg=F)
-#    plot(estCP3,xlim=c(min(loc),max(loc)))
-#    plot(estCP2,xlim=c(min(loc),max(loc)))
-##    #dev.off()
+        # Nov. 26 added to make sure that the adjacent change points are at least with distance of DELTATHRESH
+        mergedchpts = LengthEnough(c(0,mergedchpts), DELTATHRESH)
+        
+        mergedlength = length(mergedchpts)
+        if (mergedlength == 1){
+          mergedchpts = NULL
+        }else{
+          mergedchpts = mergedchpts[2:mergedlength]
+        }
+  
         
         cnvobj$chpts = mergedchpts
     } else {
@@ -240,7 +247,6 @@ function(  cnvobj, verbose=TRUE, start.from.seg=FALSE, merge=TRUE,
    
    
    cnvobj$sig.seg = matrix(0,n,2)
-   mixstate=cnvobj$mixstate
    for(i in c(1:4)){
         cnvobj$sig.seg[mixstate==i,] = cnvobj$theta.seg[mixstate==i,]%*%cnvobj$statemat[[i]]
    }

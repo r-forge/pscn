@@ -1,6 +1,7 @@
 `cnvlist4` <-
-function(samplename, chrs=1:23, talpha=0.01, cutvalue=1e-10, pi1=0.5, mu1.initial=1.1, mu2.initial=0.9,sigma1.initial=1, sigma2.initial=1, total0=1.5, total1 = 2.5, MIN.SNPS=20){
-# total0=1.5; total1 = 2.5; level0 = 0.8; level1 = 1.2; cut1=1.9; cut2=2.1; talpha=0.01; cutvalue=1e-10; pi1=0.5; pi2=0.5; mu1.initial=1.1; mu2.initial=0.9; sigma1.initial=1; sigma2.initial=1 ; MIN.SNPS=20
+function(samplename, chrs=1:23, talpha=0.01, cutvalue=1e-7, pi1=0.5, mu1.initial=1.1, mu2.initial=0.9,sigma1.initial=1, sigma2.initial=1, total0=1.5, total1 = 2.5, MIN.SNPS=20){
+#, ratio0 = 3/4, ratio1 = 4/3){
+# total0=1.5; total1 = 2.5; level0 = 0.8; level1 = 1.2; cut1=1.9; cut2=2.1; talpha=0.01; cutvalue=1e-7; pi1=0.5; pi2=0.5; mu1.initial=1.1; mu2.initial=0.9; sigma1.initial=1; sigma2.initial=1 ; MIN.SNPS=20
 # talpha: the alpha for t-test
 # cutvalue: delta for iteration stop
   pi2 = 1-pi1
@@ -119,17 +120,19 @@ function(samplename, chrs=1:23, talpha=0.01, cutvalue=1e-10, pi1=0.5, mu1.initia
             pi1.vec.new = rep(0,ny)
             pi2.vec.new = rep(0,ny)
             delta = 1
-            while (!is.na(delta) && delta>cutvalue){
-              for (i in 1:ny){
+            for (i in 1:ny){
                 pi1.vec.new[i] = exp(-(mu1-y[i])^2/(2*sigma1^2))*pi1/sigma1/(exp(-(mu1-y[i])^2/(2*sigma1^2))*pi1/sigma1+exp(-(mu2-y[i])^2/(2*sigma2^2))*pi2/sigma2)
                 pi2.vec.new[i] = exp(-(mu2-y[i])^2/(2*sigma2^2))*pi2/sigma2/(exp(-(mu1-y[i])^2/(2*sigma1^2))*pi1/sigma1+exp(-(mu2-y[i])^2/(2*sigma2^2))*pi2/sigma2)
                   }
+         #   deltavec = c()
+            while (!is.na(delta) && delta>cutvalue){              
               mu1.new = sum(pi1.vec.new[!is.na(pi1.vec.new)]*y[!is.na(pi1.vec.new)])/sum(pi1.vec.new[!is.na(pi1.vec.new)])
               sigma1.new = sqrt(sum(pi1.vec.new[!is.na(pi1.vec.new)]*(y[!is.na(pi1.vec.new)]-mu1.new)^2)/sum(pi1.vec.new[!is.na(pi1.vec.new)]))
               mu2.new = sum(pi2.vec.new[!is.na(pi2.vec.new)]*y[!is.na(pi2.vec.new)])/sum(pi2.vec.new[!is.na(pi2.vec.new)])
               sigma2.new = sqrt(sum(pi2.vec.new[!is.na(pi2.vec.new)]*(y[!is.na(pi2.vec.new)]-mu2.new)^2)/sum(pi2.vec.new[!is.na(pi2.vec.new)]))
               delta = (mu1.new-mu1)^2+(mu2.new-mu2)^2+(sigma1.new-sigma1)^2+(sigma2.new-sigma2)^2
-     # Hao: added Mar. 29, 2009.  when there are too few Het snps, there may be only one point for one category, which will cause sigma to be 0 and delta to be NaN 
+     # Hao: added Mar. 29, 2009.  when there are too few Het snps, there may be only one point for one category, which will cause sigma to be 0 and delta to be NaN           
+           #   deltavec = rbind(deltavec, c(delta, mu1.new, mu2.new))
               if (!is.na(delta)){
                 mu1 = mu1.new
                 mu2 = mu2.new
@@ -138,6 +141,14 @@ function(samplename, chrs=1:23, talpha=0.01, cutvalue=1e-10, pi1=0.5, mu1.initia
                 pi1.vec = pi1.vec.new
                 pi2.vec = pi2.vec.new
               }
+              if (is.na(delta) || delta<cutvalue){
+                break
+              }
+
+              for (i in 1:ny){
+                pi1.vec.new[i] = exp(-(mu1-y[i])^2/(2*sigma1^2))*pi1.vec[i]/sigma1/(exp(-(mu1-y[i])^2/(2*sigma1^2))*pi1.vec[i]/sigma1+exp(-(mu2-y[i])^2/(2*sigma2^2))*pi2.vec[i]/sigma2)
+                pi2.vec.new[i] = exp(-(mu2-y[i])^2/(2*sigma2^2))*pi2.vec[i]/sigma2/(exp(-(mu1-y[i])^2/(2*sigma1^2))*pi1.vec[i]/sigma1+exp(-(mu2-y[i])^2/(2*sigma2^2))*pi2.vec[i]/sigma2)
+                  }
             }
             pvalue1 = pt((mu1-mu0)/sqrt(sigma0^2/norm.length+sum((pi1.vec[!is.na(pi1.vec)]*y[!is.na(pi1.vec)]-mu1)^2)/ny^2), (norm.length+ny-2))
             pvalue2 = pt((mu2-mu0)/sqrt(sigma0^2/norm.length+sum((pi2.vec[!is.na(pi2.vec)]*y[!is.na(pi2.vec)]-mu2)^2)/ny^2), (norm.length+ny-2))
@@ -181,6 +192,14 @@ function(samplename, chrs=1:23, talpha=0.01, cutvalue=1e-10, pi1=0.5, mu1.initia
                 Type = "Loss/Loss"
               }
             }
+            # Hao add the compared of balanced/unbalanced G/L, Nov. 16, 2009
+          #  if (Type == "Gain/Loss"){
+#              if ( (mu1+mu2)/mu0>total0 && (mu1+mu2)/mu0<total1 && (mu1-mu0)/(mu0-mu2)>ratio0 && (mu1-mu0)/(mu0-mu2)<ratio1){
+#                Type = "Gain/Loss balanced"
+#               }else{
+#                Type = "Gain/Loss unbalanced"
+#               }
+#            }  
             a = sort(c(mu1,mu2))[2]
             b = sort(c(mu1,mu2))[1]
             a = round(a,digits=3)

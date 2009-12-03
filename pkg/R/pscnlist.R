@@ -1,13 +1,13 @@
 `pscnlist` <-
 function(samplename, chrs=1:23, MIN.SNPS=20, alpha=0.01, FWalpha=0.01, threshold=0.18, hard.threshold=0.125, ...){
-  longlist = cnvlist4(samplename=samplename, chrs=chrs, MIN.SNPS=20, talpha=alpha, ...)
+  longlist = cnvlist4(samplename=samplename, chrs=chrs, MIN.SNPS=MIN.SNPS, talpha=alpha, ...)
   write.table(longlist, file=paste(samplename,".longlist.txt",sep=""),row.names=FALSE, sep="\t", quote=FALSE)
-  mydata = read.table(paste(samplename,".longlist.txt",sep=""),header=TRUE)
+  mydata = read.table(paste(samplename,".longlist.txt",sep=""),header=TRUE, sep="\t")
   longlist2 = cnvlist.update(mydata, alpha=FWalpha, threshold=threshold, hard.threshold=hard.threshold)
   longid = which(!is.na(longlist2$Type))
   longlist2 = longlist2[longid,]
   write.table(longlist2, file=paste(samplename,".longlist.update.txt",sep=""),row.names=FALSE, sep="\t", quote=FALSE)
-  mydata2 = read.table(paste(samplename,".longlist.update.txt",sep=""),header=TRUE)
+  mydata2 = read.table(paste(samplename,".longlist.update.txt",sep=""),header=TRUE, sep="\t")
   mydata2 = mydata2[which(!is.na(mydata2$Type)),]
   shortlist = c()
   for (i in chrs){

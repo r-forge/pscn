@@ -18,7 +18,7 @@ function(cnvobj,level0=0.1,level1=0.9, percent=0.15){
   }else{
     if (is.null(cnvobj$chpts)){
       n = 1
-      chptall = c(0,N)
+      chptall = c(0,(N+1))
     }else{
       n = length(cnvobj$chpts)+1
       chptall = c(1,cnvobj$chpts,(N+1))

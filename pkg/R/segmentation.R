@@ -2,8 +2,7 @@
 function(samplename, chrs=1:23, gender=NULL, MIN.SNPS=20, regroup.percent=-1, combine.alpha=0.05, ...){
     for (i in chrs){
       load(paste(samplename=samplename,".Chr",i,".Smooth.Rdata",sep=""))    
-      cnvobj = segment(cnvobj, MIN.SNPS=20, ...)
-        cnvobj = suppressWarnings(regroup.theta(cnvobj, level0=level0, level1=level1, percent=regroup.percent))
+      cnvobj = segment(cnvobj, MIN.SNPS=MIN.SNPS, regroup.percent=regroup.percent,...)
         if (!is.null(cnvobj$chpts)){
         cnvobj = combine(cnvobj, alpha=combine.alpha)
         if (length(cnvobj$chpts)!=length(cnvobj$chpts.new)){

@@ -1,6 +1,6 @@
 `cnvlist.combine` <-
-function(mydata, chrid, samplename, chrs=1:23, cutvalue=1e-10, pi1=0.5, pi2=0.5, mu1.initial=1.1, mu2.initial=0.9,sigma1.initial=1, sigma2.initial=1, total0=1.5, total1 = 2.5, MIN.SNPS=20){
-# cutvalue=1e-10; pi1=0.5; pi2=0.5; mu1.initial=1.1; mu2.initial=0.9; sigma1.initial=1; sigma2.initial=1; total0=1.5; total1 = 2.5
+function(mydata, chrid, samplename, chrs=1:23, cutvalue=1e-7, pi1=0.5, pi2=0.5, mu1.initial=1.1, mu2.initial=0.9,sigma1.initial=1, sigma2.initial=1, total0=1.5, total1 = 2.5, MIN.SNPS=20){
+# cutvalue=1e-7; pi1=0.5; pi2=0.5; mu1.initial=1.1; mu2.initial=0.9; sigma1.initial=1; sigma2.initial=1; total0=1.5; total1 = 2.5
   load(paste(samplename,".Chr",chrid,".pscn.Rdata",sep=""))
   SNP.star = cnvobj$SNP.star
   SNP.begin = mydata$SNP.begin
@@ -132,12 +132,12 @@ function(mydata, chrid, samplename, chrs=1:23, cutvalue=1e-10, pi1=0.5, pi2=0.5,
       sigma2 = sigma2.initial
       pi1.vec.new = rep(0,ny)
       pi2.vec.new = rep(0,ny)
-      delta = 1
-      while (!is.na(delta) && delta>cutvalue){
-        for (i in 1:ny){
+       for (i in 1:ny){
           pi1.vec.new[i] = exp(-(mu1-y[i])^2/(2*sigma1^2))*pi1/sigma1/(exp(-(mu1-y[i])^2/(2*sigma1^2))*pi1/sigma1+exp(-(mu2-y[i])^2/(2*sigma2^2))*pi2/sigma2)
           pi2.vec.new[i] = exp(-(mu2-y[i])^2/(2*sigma2^2))*pi2/sigma2/(exp(-(mu1-y[i])^2/(2*sigma1^2))*pi1/sigma1+exp(-(mu2-y[i])^2/(2*sigma2^2))*pi2/sigma2)
         }
+      delta = 1
+      while (!is.na(delta) && delta>cutvalue){
         mu1.new = sum(pi1.vec.new[!is.na(pi1.vec.new)]*y[!is.na(pi1.vec.new)])/sum(pi1.vec.new[!is.na(pi1.vec.new)])
         sigma1.new = sqrt(sum(pi1.vec.new[!is.na(pi1.vec.new)]*(y[!is.na(pi1.vec.new)]-mu1.new)^2)/sum(pi1.vec.new[!is.na(pi1.vec.new)]))
         mu2.new = sum(pi2.vec.new[!is.na(pi2.vec.new)]*y[!is.na(pi2.vec.new)])/sum(pi2.vec.new[!is.na(pi2.vec.new)])
@@ -150,6 +150,13 @@ function(mydata, chrid, samplename, chrs=1:23, cutvalue=1e-10, pi1=0.5, pi2=0.5,
           sigma2 = sigma2.new
           pi1.vec = pi1.vec.new
           pi2.vec = pi2.vec.new
+        }
+        if (is.na(delta) || delta<cutvalue){
+          break
+        }
+         for (i in 1:ny){
+          pi1.vec.new[i] = exp(-(mu1-y[i])^2/(2*sigma1^2))*pi1.vec[i]/sigma1/(exp(-(mu1-y[i])^2/(2*sigma1^2))*pi1.vec[i]/sigma1+exp(-(mu2-y[i])^2/(2*sigma2^2))*pi2.vec[i]/sigma2)
+          pi2.vec.new[i] = exp(-(mu2-y[i])^2/(2*sigma2^2))*pi2.vec[i]/sigma2/(exp(-(mu1-y[i])^2/(2*sigma1^2))*pi1.vec[i]/sigma1+exp(-(mu2-y[i])^2/(2*sigma2^2))*pi2.vec[i]/sigma2)
         }
       }
       a = sort(c(mu1,mu2))[2]
