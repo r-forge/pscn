@@ -30,15 +30,15 @@ smoothing(samplename, inputdata,...)
 \value{
 It saves files samplename.Chr1.Smooth.Rdata etc.
 }
+\references{Chen, H., Xing, H. and Zhang, N.R. (2009) Estimation of parent specific DNA copy number
+in tumors using high-density genotyping arrays.  Under Review, manuscript can be downloaded from www-stat.stanford.edu/~nzhang/.
+}
 \author{
 Hao Chen, Haipeng Xing, and Nancy R. Zhang
 
 Maintainer:  Hao Chen (haochen@stanford.edu)
 }
-\references{
-Chen, H., Xing, H. and Zhang, N.R. (2009) Estimation of parent specific DNA copy number
-in tumors using high-density genotyping arrays.  Under Review, manuscript can be downloaded from www-stat.stanford.edu/~nzhang/.
-
+\note{ ~~further notes~~ 
 }
 \seealso{
 this function follows with \code{\link{segmentation}} and \code{\link{pscnlist}}. 
@@ -50,4 +50,5 @@ data(ex0)  # this file contain four columns "Chromosome ID", "SNP Position (bp)"
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
-
+\keyword{ ~kwd1 }
+\keyword{ ~kwd2 }% __ONLY ONE__ keyword per line

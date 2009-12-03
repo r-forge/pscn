@@ -10,7 +10,7 @@ segmentation(samplename, gender = NULL, ...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{samplename}{ a name indicates where the data is sampled from, eg. patient ID }
+ \item{samplename}{ a name indicates where the data is sampled from, eg. patient ID }
   \item{chrs}{indicates which chromosomes of the sample are being segmented.  (Default=1:23)}
   \item{gender}{This function will determine the gender of the person where the data comes from if 23 is included in the "chrs" no match what input of "gender" is.  However, if 23 is not included in the chrs, the gender of the person where data comes from will be determined by the gender input.}
   \item{MIN.SNPS}{specifies the minimum number of SNPs in a segment. (Default=20)}
@@ -35,15 +35,12 @@ This function first uses a criteria based on absolute differences to find change
 \value{
 It returns files samplename.Chr1.Segment.Rdata, samplename.Chr1.pscn.Rdata, ect.
 }
-\author{
-Hao Chen, Haipeng Xing, and Nancy R. Zhang
+\references{Chen, H., Xing, H. and Zhang, N.R. (2009) Estimation of parent specific DNA copy number
+in tumors using high-density genotyping arrays.  Under Review, manuscript can be downloaded from www-stat.stanford.edu/~nzhang/.
+}
+\author{Hao Chen, Haipeng Xing, and Nancy R. Zhang
 
 Maintainer:  Hao Chen (haochen@stanford.edu)
-}
-\references{
-Chen, H., Xing, H. and Zhang, N.R. (2009) Estimation of parent specific DNA copy number
-in tumors using high-density genotyping arrays.  Under Review, manuscript can be downloaded from www-stat.stanford.edu/~nzhang/.
-
 }
 \note{follows the result of \link{smoothing}.  This function can only be run after the function \link{smoothing}.}
 \seealso{

@@ -1,5 +1,5 @@
 `smooth.cnv2d` <-
-function(cnvobj,hyper=NULL,mixstate=NULL, niters=2,nBCMIXiters=10,K=20,M=10,outerloop=1, selectHyper=4, verbose=TRUE, plots=FALSE, save.interim=FALSE){
+function(cnvobj,hyper=NULL,mixstate=NULL, niters=1,nBCMIXiters=10,K=20,M=10,outerloop=2, selectHyper=4, verbose=TRUE, plots=FALSE, save.interim=FALSE){
 
   # UNCOMMENT THESE IF NOT DEBUGGING!!!
 #  hyper=NULL; mixstate=NULL; niters=1; nBCMIXiters=5; K=20; M=10; outerloop=2; selectHyper=4; verbose=TRUE; plots=FALSE

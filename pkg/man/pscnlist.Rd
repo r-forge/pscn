@@ -32,15 +32,12 @@ In this step, the segments with no change are first determined using a modified 
 \value{
 It returns three .txt files named samplename.longlist.txt, samplename.longlist.update.txt, samplename.shortlist.txt 
 }
-\author{
-Hao Chen, Haipeng Xing, and Nancy R. Zhang
+\references{Chen, H., Xing, H. and Zhang, N.R. (2009) Estimation of parent specific DNA copy number
+in tumors using high-density genotyping arrays.  Under Review, manuscript can be downloaded from www-stat.stanford.edu/~nzhang/.
+}
+\author{Hao Chen, Haipeng Xing, and Nancy R. Zhang
 
 Maintainer:  Hao Chen (haochen@stanford.edu)
-}
-\references{
-Chen, H., Xing, H. and Zhang, N.R. (2009) Estimation of parent specific DNA copy number
-in tumors using high-density genotyping arrays.  Under Review, manuscript can be downloaded from www-stat.stanford.edu/~nzhang/.
-
 }
 \note{follows the result of \link{segmentation}.  this function can only be run after the function \link{segmentation}.}
 \seealso{
@@ -52,4 +49,5 @@ in tumors using high-density genotyping arrays.  Under Review, manuscript can be
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
-
+\keyword{ ~kwd1 }
+\keyword{ ~kwd2 }% __ONLY ONE__ keyword per line

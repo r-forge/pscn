@@ -6,7 +6,7 @@
 This function provides a variety of plots showing results of a pscn analysis after \code{\link{smoothing}}, \code{\link{segmentation}} and \code{\link{pscnlist}}.   
 }
 \usage{
-pscn.plot(cnvobj = myobj, ...)
+pscn.plot(cnvobj = myobj, cndata = cnvlist, ...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -27,29 +27,18 @@ pscn.plot(cnvobj = myobj, ...)
   \item{col.loss}{Applicable when which.plot is "copy number", to specifies the color for loss chromosoem regions.  (Default=blue)}
   \item{col.normal}{Applicable when which.plot is "copy number", to specifies the color for normal chromosome regions.  (Default=green)}
 }
-\references{ 
-Chen, H., Xing, H. and Zhang, N.R. (2009) Estimation of parent specific DNA copy number
+\references{Chen, H., Xing, H. and Zhang, N.R. (2009) Estimation of parent specific DNA copy number
 in tumors using high-density genotyping arrays.  Under Review, manuscript can be downloaded from www-stat.stanford.edu/~nzhang/.
- }
-\author{Hao Chen}
-\note{All plots can only be done after calling the function \link{pscnlist}.}
+}
+\author{Hao Chen, Haipeng Xing, and Nancy R. Zhang
+
+Maintainer:  Hao Chen (haochen@stanford.edu)
+}
+\note{all plots can only be done after the function \link{pscnlist}.}
 \seealso{
 This function provides a variety of plots showing results after the pscn analysis after \link{smoothing}, \link{segmentation} and \link{pscnlist}.   
 }
 \examples{
-
-# First load the example data set, call smoothing and segmentation functions, then call pscnlist to generate analysis results.
-  data(ex0) # this file contain four columns "Chromosome ID", "SNP Position (bp)", "logR" and "Bfrequency" with column names "Chr", "Position", "logR" and "bfreq".
-
-# smoothing (estimate parent-specify copy numbers)
-  smoothing(samplename="TCGA.02.0043.01A.01D", inputdata=mydata, platform="Illumina") 
-
-# segmentation (determine change points) this function can only be run after the function "smoothing".
-  segmentation(samplename="TCGA.02.0043.01A.01D",chrs=1,regroup.percent=0.05) 
-
-# pscnlist (get a table showing major and minor copy numbers) this function can only be run after the function "segmentation".
-  pscnlist(samplename="TCGA.02.0043.01A.01D", chrs=1)
-
 # view major and minor copy numbers of a chromosome (use result from \link{pscnlist}).
 
   mydata = read.table("TCGA.02.0043.01A.01D.shortlist.txt", header=TRUE)    # read in a Text document named samplename.shortlist.txt for "copy number" plot 
