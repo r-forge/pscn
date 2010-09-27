@@ -1,4 +1,4 @@
-`initialHyper.cnv2d` <-
+initialHyper.cnv2d <-
 function(cnvobj){
    if (!inherits(cnvobj, 'cnv2d')) 
       stop("First argument must be a cnv2d object.")

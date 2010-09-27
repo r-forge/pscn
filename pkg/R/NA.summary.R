@@ -1,4 +1,4 @@
-`NA.summary` <-
+NA.summary <-
 function(mat){
   natype = c("NA.0.1","NA.0.0","NA.-1.1","NA.-1.0")
   leng = rep(0,4)

@@ -1,4 +1,4 @@
-`cluster.1` <-
+cluster.1 <-
 function(mat1,mat2){
   mat = rbind(mat1,mat2)
   temp = getmusigma(mat)

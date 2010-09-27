@@ -1,4 +1,4 @@
-`ABtest` <-
+ABtest <-
 function(cnvobj, alpha=0.05){
   
   N = dim(cnvobj$theta)[1]
@@ -11,8 +11,8 @@ function(cnvobj, alpha=0.05){
     chptnew = c(1,cnvobj$chpts,(N+1))
   }
   
-  A = cnvobj$illumina$A
-  B = cnvobj$illumina$B
+  A = cnvobj$rawdata$A
+  B = cnvobj$rawdata$B
   
   major.median = rep(0,(n+1))
   minor.median = rep(0,(n+1))

@@ -1,5 +1,5 @@
-`cnvlist.update` <-
-function(mydata, alpha=0.01, threshold = 0.18, hard.threshold=0.1){
+cnvlist.update <-
+function(mydata, alpha=0.01, threshold = 0.18, hard.threshold=0.1, cutdev=0.4){
   n = dim(mydata)[1]
   p = alpha/(2*n)
   mu0 = mydata$Normal.copy[1]
@@ -15,6 +15,14 @@ function(mydata, alpha=0.01, threshold = 0.18, hard.threshold=0.1){
       mydata$Type[j] = "Loss/Loss"
     }else if (Mp>(1-p) && mp<p && (M-mu0)>threshold && (mu0-m)>threshold){
       mydata$Type[j] = "Gain/Loss"
+      #if (GLbalance==TRUE){
+#        ratio1 = 1/ratio0
+#        if ( (M+m)/mu0>2-cutdev && (M+m)/mu0<2+cutdev && (M-mu0)/(mu0-m)>ratio0 && (M-mu0)/(mu0-m)<ratio1){
+#          mydata$Type[j] = "Gain/Loss_balanced"
+#        }else{
+#          mydata$Type[j] = "Gain/Loss_unbalanced"
+#        }
+#      }
     }else if (Mp>(1-p) && ( (mp>(1-p) && (m-mu0)<threshold) || (mp>p && mp<(1-p)) || (mp<p && (mu0-m)<threshold) && (mu0-m)<(M-mu0) )){
       mydata$Type[j] = "Gain/Normal"
     }else if (mp<p && ( (Mp>(1-p) && (M-mu0)<(mu0-m) && (M-mu0)<threshold) || (Mp>p && Mp<(1-p)) || (Mp<p && (mu0-M)<threshold) )){
@@ -36,4 +44,3 @@ function(mydata, alpha=0.01, threshold = 0.18, hard.threshold=0.1){
 
   return(mydata)
 }
-

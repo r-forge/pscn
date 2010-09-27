@@ -1,4 +1,4 @@
-`cluster.2` <-
+cluster.2 <-
 function(mat1,mat2){
   temp1 = getmusigma(mat1)
   mu1 = temp1$mu

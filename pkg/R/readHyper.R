@@ -1,4 +1,4 @@
-`readHyper` <-
+readHyper <-
 function(filename){
     hypervec <- scan(filename)
 

@@ -1,4 +1,4 @@
-`createHyper` <-
+createHyper <-
 function(p, a, b, muvec, vvec, sigAAvec, sigABvec, sigBAvec, sigBBvec, basevec){
     v = matrix(vvec, nrow=2,ncol=2)
     sigAA = matrix(sigAAvec, nrow=2,ncol=2,byrow=TRUE)

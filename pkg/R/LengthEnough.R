@@ -1,4 +1,4 @@
-`LengthEnough` <-
+LengthEnough <-
 function(vec, MinLength){
   n = length(vec)
   if (n <=1){

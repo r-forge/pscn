@@ -1,5 +1,5 @@
-`segmentation` <-
-function(samplename, chrs=1:23, gender=NULL, MIN.SNPS=20, regroup.percent=-1, combine.alpha=0.05, ...){
+segmentation <-
+function(samplename, chrs=1:23, gender=NULL, MIN.SNPS=20, regroup.percent=0.05, combine.alpha=0.01, ...){
     for (i in chrs){
       load(paste(samplename=samplename,".Chr",i,".Smooth.Rdata",sep=""))    
       cnvobj = segment(cnvobj, MIN.SNPS=MIN.SNPS, regroup.percent=regroup.percent,...)

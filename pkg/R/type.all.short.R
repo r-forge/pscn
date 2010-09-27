@@ -1,4 +1,4 @@
-`type.all.short` <-
+type.all.short <-
 function(myname){
   typelist = c()
   nsample = dim(myname)[1]

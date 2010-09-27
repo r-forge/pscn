@@ -1,4 +1,4 @@
-`centro` <-
+centro <-
 function(cnvobj, MIN.GAP = 2e6){
   pos = cnvobj$pos
   N = length(pos)

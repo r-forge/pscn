@@ -1,4 +1,4 @@
-`type.sub` <-
+type.sub <-
 function(mydata, mu0, n, Ntest, samplename, chrid, alpha=0.01, threshold = 0.15){
   load(paste(samplename,".Chr",chrid,".pscn.Rdata",sep=""))
   major.pvalue = mydata$major.pvalue

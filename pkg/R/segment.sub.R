@@ -1,4 +1,4 @@
-`segment.sub` <-
+segment.sub <-
 function(  cnvobj, verbose=TRUE, start.from.seg=FALSE, merge=TRUE, 
                     DALPHA.THRESH = 0.005, DBETA.THRESH = 0.005, DELTATHRESH = 5,   
                     BETA.THRESH=0.02,ALPHA.THRESH=0.02,MIN.SNPS=20,MIN.HET.SNPS=5,BASELINE.BETA.THRESH=0.1,FRAC.CHPTS=0.01){

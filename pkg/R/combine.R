@@ -1,4 +1,4 @@
-`combine` <-
+combine <-
 function(cnvobj, alpha=0.05){
   cnvobj = combine.sub(cnvobj)
   if (!is.null(cnvobj$chpts.new)){

@@ -1,4 +1,4 @@
-`plot.sig` <-
+plot.sig <-
 function(x, loc=NULL, which.chrom=NA, which.plot, seg, plot.pos=FALSE, display.legend=TRUE, main=NULL,color.points=FALSE,...){
    if (!inherits(x, 'cnv2d')) 
       stop("First argument must be a cnv2d object.")

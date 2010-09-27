@@ -1,4 +1,4 @@
-`type.length` <-
+type.length <-
 function(mat){
   Type = c("Gain/Gain","1.Gain/Gain","t.Gain/Gain", "Gain/Normal","t.Gain/Normal","Gain/Loss","t.Gain/Loss","Normal/Loss","t.Normal/Loss","Loss/Loss","1.Loss/Loss","t.Loss/Loss")
   leng = rep(0,12)

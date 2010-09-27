@@ -1,4 +1,4 @@
-`plot.cnv2d` <-
+plot.cnv2d <-
 function (x, loc=NULL, which.chrom=NA, which.plot = "sig", 
                         seg = TRUE, display.legend=TRUE,color.points=FALSE, ...) {
     

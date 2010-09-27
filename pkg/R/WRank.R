@@ -1,4 +1,4 @@
-`WRank` <-
+WRank <-
 function(vec1, vec2, alpha=0.05){
   n = length(vec1)
   m = length(vec2)

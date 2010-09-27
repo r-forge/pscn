@@ -1,4 +1,4 @@
-`combine.sub` <-
+combine.sub <-
 function(cnvobj, alpha=0.05){
   test = ABtest(cnvobj, alpha=alpha)
   if (!is.null(cnvobj$chpts.new)){

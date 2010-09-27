@@ -1,4 +1,4 @@
-`smooth.cnv2d` <-
+smooth.cnv2d <-
 function(cnvobj,hyper=NULL,mixstate=NULL, niters=1,nBCMIXiters=10,K=20,M=10,outerloop=2, selectHyper=4, verbose=TRUE, plots=FALSE, save.interim=FALSE){
 
   # UNCOMMENT THESE IF NOT DEBUGGING!!!
@@ -28,6 +28,14 @@ function(cnvobj,hyper=NULL,mixstate=NULL, niters=1,nBCMIXiters=10,K=20,M=10,oute
     obsvec[seq(1,nrow(obs)*2-1,2)] = obs[,1]
     obsvec[seq(2,nrow(obs)*2,2)] = obs[,2]
 
+    statep = rep(0,nrow(obs)*4)
+    statep[seq(1,nrow(obs)*4-3,4)] = cnvobj$genotype.freq[,1]
+    statep[seq(2,nrow(obs)*4-2,4)] = cnvobj$genotype.freq[,2]
+    statep[seq(3,nrow(obs)*4-1,4)] = cnvobj$genotype.freq[,3]
+    statep[seq(4,nrow(obs)*4,4)] = cnvobj$genotype.freq[,4]
+    # cat("\n",statep,"\n")
+
+
     cnvobj$fitparams = list(niters=niters,nBCMIXiters=nBCMIXiters,K=K,M=M,outerloop=outerloop, selectHyper=selectHyper)
 
     for(iter in c(1:outerloop)){
@@ -47,7 +55,7 @@ function(cnvobj,hyper=NULL,mixstate=NULL, niters=1,nBCMIXiters=10,K=20,M=10,oute
                                     newsigAAvec=as.double(cnvobj$hyper$sigAAvec), newsigABvec=as.double(cnvobj$hyper$sigABvec),
                                     newsigBAvec=as.double(cnvobj$hyper$sigBAvec), newsigBBvec=as.double(cnvobj$hyper$sigBBvec), 
                                     as.integer(K), as.integer(M), as.integer(niters), as.integer(nBCMIXiters),
-                                    estSig=double(length(obsvec)), estBS=double(nrow(obs)), as.integer(selectHyper),
+                                    estSig=double(length(obsvec)), estBS=double(nrow(obs)), as.integer(selectHyper), statep=as.double(statep),
                                     PACKAGE="pscn")     
     
         

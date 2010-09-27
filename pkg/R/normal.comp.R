@@ -1,4 +1,4 @@
-`normal.comp` <-
+normal.comp <-
 function(y,mu,sigma){
   deter = det(sigma)
   inv = solve(sigma)

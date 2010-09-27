@@ -1,4 +1,4 @@
-`clustertest` <-
+clustertest <-
 function(cnvobj,chptall){
   n = length(chptall)-1
     
@@ -34,9 +34,8 @@ function(cnvobj,chptall){
       endpt = c(endpt,(chptall[i+1]-1))
       test1 = c(test1,"NA")
       test2 = c(test2,"NA")
-      result = c(result,1)
+      result = c(result,2)
     }         
   }    
   return(rbind(beginpt,endpt,test1,test2,result))
 }
-

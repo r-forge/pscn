@@ -1,4 +1,4 @@
-`printHyper` <-
+printHyper <-
 function(hyper,filename=NULL){
     if(!is.null(filename)) sink(filename)
     cat(format(hyper$p,scientific=FALSE), " ",sep="")

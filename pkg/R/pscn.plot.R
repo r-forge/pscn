@@ -1,4 +1,4 @@
-`pscn.plot` <-
+pscn.plot <-
 function(cnvobj=NULL, which.plot="bfreq", region=FALSE, regionid=NULL, region.col=NULL, scatter=FALSE, Contour=FALSE, use.main=FALSE, cndata=NULL, chrid=NULL, use.pos=FALSE, loc=NULL, changepoint=TRUE, col.gain="red", col.loss="blue", col.normal="green", ...){
   if (!is.null(loc) && region && !is.null(regionid)){
     cat("Please only specify loc or regionid.")
@@ -73,41 +73,44 @@ function(cnvobj=NULL, which.plot="bfreq", region=FALSE, regionid=NULL, region.co
         cols = reg.col
       }else{
         cols = cnvobj$newstate[loc]
-        if (which.plot=="logR"){
+        if (which.plot=="logR" || which.plot=="R"){
           cols = rep("black", length(cols))
         }
       }
       
       if (Contour){
         locs = which(reg==1)
-        f1 = kde2d(cnvobj$illumina$A[locs], cnvobj$illumina$B[locs], n=100, h=c(0.7,0.7))
+        f1 = kde2d(cnvobj$rawdata$A[locs], cnvobj$rawdata$B[locs], n=100, h=c(0.7,0.7))
         contour(f1, levels=c(0.2), drawlabels=FALSE, col=region.col[1], lwd=3, xlab="A", ylab="B", cex.lab=1.5, xlim=c(0,5), ylim=c(0,5), main=mainlab)
         if (n>1){
           for(ind in 2:n){
             locs=which(reg==ind)
-            f1 = kde2d(cnvobj$illumina$A[locs],cnvobj$illumina$B[locs], n=100, h=c(0.7,0.7))
+            f1 = kde2d(cnvobj$rawdata$A[locs],cnvobj$rawdata$B[locs], n=100, h=c(0.7,0.7))
             contour(f1,levels=c(0.2), drawlabels=FALSE, col=region.col[ind], add=TRUE, lwd=3)
           }
         }    
       }else if (scatter){
         if (region){
-          plot(cnvobj$illumina$A[loc], cnvobj$illumina$B[loc], col=reg.col, ylim=c(0,max(5,max(cnvobj$illumina$B[loc]))),xlim=c(0,max(5,max(cnvobj$illumina$A[loc]))),ylab="B", xlab="A", cex.lab=1.5, main=mainlab)
+          plot(cnvobj$rawdata$A[loc], cnvobj$rawdata$B[loc], col=reg.col, ylim=c(0,max(5,max(cnvobj$rawdata$B[loc]))),xlim=c(0,max(5,max(cnvobj$rawdata$A[loc]))),ylab="B", xlab="A", cex.lab=1.5, main=mainlab)
         }else{
-          plot(cnvobj$illumina$A[loc], cnvobj$illumina$B[loc], col=cnvobj$newstate[loc], ylim=c(0,max(5,max(cnvobj$illumina$B[loc]))),xlim=c(0,max(5,max(cnvobj$illumina$A[loc]))),ylab="B", xlab="A", cex.lab=1.5, main=mainlab)
+          plot(cnvobj$rawdata$A[loc], cnvobj$rawdata$B[loc], col=cnvobj$newstate[loc], ylim=c(0,max(5,max(cnvobj$rawdata$B[loc]))),xlim=c(0,max(5,max(cnvobj$rawdata$A[loc]))),ylab="B", xlab="A", cex.lab=1.5, main=mainlab)
         } 
       }else{    
         if (use.pos){
           if (which.plot=="A"){
-            plot(cnvobj$pos[loc], cnvobj$illumina$A[loc], col=cols,xlab="Position (bp)", ylab="A intensity", main=mainlab,...)
+            plot(cnvobj$pos[loc]/1000000, cnvobj$rawdata$A[loc], col=cols,xlab="Position (Mb)", ylab="A intensity", main=mainlab,...)
           }
           if (which.plot=="B"){
-            plot(cnvobj$pos[loc], cnvobj$illumina$B[loc], col=cols,xlab="Position (bp)", ylab="B intensity", main=mainlab,...)
+            plot(cnvobj$pos[loc]/1000000, cnvobj$rawdata$B[loc], col=cols,xlab="Position (Mb)", ylab="B intensity", main=mainlab,...)
           }
           if (which.plot=="logR"){
-            plot(cnvobj$pos[loc], cnvobj$illumina$logR[loc], col=cols,xlab="Position (bp)", ylab="logR", main=mainlab,...)
+            plot(cnvobj$pos[loc]/1000000, cnvobj$rawdata$logR[loc], col=cols,xlab="Position (Mb)", ylab="logR", main=mainlab,...)
+          }
+          if (which.plot=="R"){
+            plot(cnvobj$pos[loc]/1000000, exp(cnvobj$rawdata$logR[loc])*2, col=cols,xlab="Position (Mb)", ylab="R", main=mainlab,...)
           }
           if (which.plot=="bfreq"){
-            plot(cnvobj$pos[loc], cnvobj$illumina$theta[loc], col=cols,xlab="Position (bp)", ylab="B frequence", main=mainlab,...)
+            plot(cnvobj$pos[loc]/1000000, cnvobj$rawdata$theta[loc], col=cols,xlab="Position (Mb)", ylab="BAF", main=mainlab,...)
           }
           if (changepoint && !region){
             chptall = sort(c(cnvobj$chpts,cnvobj$SNP.star))
@@ -118,16 +121,19 @@ function(cnvobj=NULL, which.plot="bfreq", region=FALSE, regionid=NULL, region.co
           }
         }else{
           if (which.plot=="A"){
-            plot(loc, cnvobj$illumina$A[loc], col=cols,xlab="SNP Index", ylab="A intensity", main=mainlab,...)
+            plot(loc, cnvobj$rawdata$A[loc], col=cols,xlab="SNP Index", ylab="A intensity", main=mainlab,...)
           }
           if (which.plot=="B"){
-            plot(loc, cnvobj$illumina$B[loc], col=cols,xlab="SNP Index", ylab="B intensity", main=mainlab,...)
+            plot(loc, cnvobj$rawdata$B[loc], col=cols,xlab="SNP Index", ylab="B intensity", main=mainlab,...)
           }
           if (which.plot=="logR"){
-            plot(loc, cnvobj$illumina$logR[loc], col=cols, xlab="SNP Index", ylab="logR", main=mainlab,...)
+            plot(loc, cnvobj$rawdata$logR[loc], col=cols, xlab="SNP Index", ylab="logR", main=mainlab,...)
+          }
+          if (which.plot=="R"){
+            plot(loc, exp(cnvobj$rawdata$logR[loc])*2, col=cols, xlab="SNP Index", ylab="R", main=mainlab,...)
           }
           if (which.plot=="bfreq"){
-            plot(loc, cnvobj$illumina$theta[loc], col=cols,xlab="SNP Index", ylab="Bfreq", main=mainlab,...)
+            plot(loc, cnvobj$rawdata$theta[loc], col=cols,xlab="SNP Index", ylab="BAF", main=mainlab,...)
           }
           if (changepoint & !region){
             tempid = which(cndata$Chr==strsplit(cnvobj$label,"Chr")[[1]][2])
@@ -152,4 +158,3 @@ function(cnvobj=NULL, which.plot="bfreq", region=FALSE, regionid=NULL, region.co
     }
   }
 }
-

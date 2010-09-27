@@ -1,4 +1,4 @@
-`group.number` <-
+group.number <-
 function(samplename, chrs = 1:23, gender=NULL, MIN.SNPS = 20){
 # dataflag is used to treat the original 63 samples different from the later samples because the original 63 samples use a different system in the name. dataflag=0 for the original 63 samples, while 1 for the later samples.
 
@@ -53,7 +53,6 @@ function(samplename, chrs = 1:23, gender=NULL, MIN.SNPS = 20){
     cnvobj$clus = clus[5,]
     cnvobj$chpts = cnvobj$chpts.new
     cnvobj$chpts.new = NULL
-    save(cnvobj,file=paste(cnvobj$label,".pscn.Rdata",sep=""))
+    save(cnvobj,file=paste(cnvobj$label,".pscn0.Rdata",sep=""))
   }
 }
-

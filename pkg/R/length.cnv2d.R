@@ -1,4 +1,4 @@
-`length.cnv2d` <-
+length.cnv2d <-
 function(x){
     len=dim(x$intensity)[1]
     len

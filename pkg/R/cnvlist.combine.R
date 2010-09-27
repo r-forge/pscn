@@ -1,7 +1,9 @@
-`cnvlist.combine` <-
-function(mydata, chrid, samplename, chrs=1:23, cutvalue=1e-7, pi1=0.5, pi2=0.5, mu1.initial=1.1, mu2.initial=0.9,sigma1.initial=1, sigma2.initial=1, total0=1.5, total1 = 2.5, MIN.SNPS=20){
-# cutvalue=1e-7; pi1=0.5; pi2=0.5; mu1.initial=1.1; mu2.initial=0.9; sigma1.initial=1; sigma2.initial=1; total0=1.5; total1 = 2.5
+cnvlist.combine <-
+function(mydata, chrid, samplename, chrs=1:23, cutvalue=1e-7, pi1=0.5, pi2=0.5, mu1.initial=1.1, mu2.initial=0.9,sigma1.initial=1, sigma2.initial=1, cutdev=0.4, MIN.SNPS=20){
+# cutvalue=1e-7; pi1=0.5; pi2=0.5; mu1.initial=1.1; mu2.initial=0.9; sigma1.initial=1; sigma2.initial=1; cutdev=0.4
   load(paste(samplename,".Chr",chrid,".pscn.Rdata",sep=""))
+  total0 = cnvobj$Rmedian-cutdev
+  total1 = cnvobj$Rmedian+cutdev
   SNP.star = cnvobj$SNP.star
   SNP.begin = mydata$SNP.begin
   SNP.end = mydata$SNP.end
@@ -79,7 +81,7 @@ function(mydata, chrid, samplename, chrs=1:23, cutvalue=1e-7, pi1=0.5, pi2=0.5, 
         med = ABmedian(cnvobj,chptall)
              
         for (i in 1:n){
-          if (cnvobj$clus[i]==1 && med$total.median>total0 && med$total.median<total1){
+          if (cnvobj$clus[i]==1 && med$total.median[i]>total0 && med$total.median[i]<total1){
             normid[i] = 1
           }
         }
@@ -124,7 +126,7 @@ function(mydata, chrid, samplename, chrs=1:23, cutvalue=1e-7, pi1=0.5, pi2=0.5, 
       id3 = which(temp==3)+SNP.begin.new[k]-1
       n1 = length(id2)
       n2 = length(id3) 
-      y = c(cnvobj$illumina$A[id2],cnvobj$illumina$A[id3],cnvobj$illumina$B[id2],cnvobj$illumina$B[id3])
+      y = c(cnvobj$rawdata$A[id2],cnvobj$rawdata$A[id3],cnvobj$rawdata$B[id2],cnvobj$rawdata$B[id3])
       ny = length(y)
       mu1 = mu1.initial
       mu2 = mu2.initial
@@ -165,8 +167,8 @@ function(mydata, chrid, samplename, chrs=1:23, cutvalue=1e-7, pi1=0.5, pi2=0.5, 
       b = round(b,digits=3)
       Value = paste(a,"/",b,sep="") 
       value.new = c(value.new, Value)
-      pvalue1 = pt((mu1-mu0)/sqrt(sigma0^2/norm.length+sum((pi1.vec[!is.na(pi1.vec)]*y[!is.na(pi1.vec)]-mu1)^2)/ny^2), (norm.length+ny-2))
-      pvalue2 = pt((mu2-mu0)/sqrt(sigma0^2/norm.length+sum((pi2.vec[!is.na(pi2.vec)]*y[!is.na(pi2.vec)]-mu2)^2)/ny^2), (norm.length+ny-2))
+      pvalue1 = pt((mu1-mu0)/sqrt(sigma0^2/norm.length+sigma1^2/ max( (sum(pi1.vec[!is.na(pi1.vec)])-1), 1) ), (norm.length+sum(pi1.vec[!is.na(pi1.vec)])-2))
+      pvalue2 = pt((mu2-mu0)/sqrt(sigma0^2/norm.length+sigma2^2/ max( (sum(pi2.vec[!is.na(pi2.vec)])-1), 1) ), (norm.length+sum(pi2.vec[!is.na(pi2.vec)])-2))
       pvalue1.new = c(pvalue1.new, as.character(pvalue1))
       pvalue2.new = c(pvalue2.new, as.character(pvalue2))
     }else{
@@ -179,4 +181,3 @@ function(mydata, chrid, samplename, chrs=1:23, cutvalue=1e-7, pi1=0.5, pi2=0.5, 
   colnames(mydata.new) = c("Sample", "Chr", "Type", "Value", "Normal.copy", "SNP.begin", "SNP.end", "Pos.begin", "Pos.end", "major.pvalue", "minor.pvalue")
   return(mydata.new)
 }
-

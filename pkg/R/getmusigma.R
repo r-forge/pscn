@@ -1,4 +1,4 @@
-`getmusigma` <-
+getmusigma <-
 function(mat){
   n = dim(mat)[1]
   mu = rep(0,2)

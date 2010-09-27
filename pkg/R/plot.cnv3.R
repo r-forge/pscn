@@ -1,4 +1,4 @@
-`plot.cnv3` <-
+plot.cnv3 <-
 function(mydata, chrid, pos=FALSE, gaincol="red", mainlab=NULL, normalcol="green", losscol="blue", elsecol = "grey", linewidth = 3, locs=NULL){
     mydata = mydata[which(mydata$Chr==chrid),]
 # alpha=0.01; gaincol="red"; normalcol="green"; losscol="blue"; elsecol = "grey"; linewidth = 3
@@ -6,7 +6,6 @@ function(mydata, chrid, pos=FALSE, gaincol="red", mainlab=NULL, normalcol="green
     mu0 = mydata$Normal.copy[1]
     n = dim(mydata)[1]
     N = length(cnvobj$pos)
-    Type = mydata$Type
     if (is.null(locs)){
       a = 1
       b = N
@@ -24,11 +23,12 @@ function(mydata, chrid, pos=FALSE, gaincol="red", mainlab=NULL, normalcol="green
     }
     mydata = mydata[which(id==1),]
     n = dim(mydata)[1]       
-    major = c()
+    Type = mydata$Type
+   major = c()
     minor = c()
     if (n > 0){
       for (j in 1:n){
-        if (Type[j]=="Gain/Loss" || Type[j]=="Gain/Gain" || Type[j]=="Loss/Loss"){
+        if (Type[j]=="Gain/Loss"|| Type[j]=="Gain/Loss_balanced" || Type[j]=="Gain/Loss_unbalanced" || Type[j]=="Gain/Gain" || Type[j]=="Loss/Loss"){
           valueM = as.numeric(strsplit(as.character(mydata$Value[j]),"/")[[1]][1])
           major = c(major,valueM)
           valuem = as.numeric(strsplit(as.character(mydata$Value[j]),"/")[[1]][2])
@@ -60,27 +60,28 @@ function(mydata, chrid, pos=FALSE, gaincol="red", mainlab=NULL, normalcol="green
       if (!is.null(cnvobj$SNP.star) && cnvobj$SNP.star>=a && cnvobj$SNP.star<=b){
         normal[cnvobj$SNP.star-a+1]=NA
       }
-      plot(cnvobj$pos[x],normal,type="l",col=normalcol,lwd=linewidth,xlab="Position (bp)",ylab="Copy Number",main=mainlab,ylim=c(0,max(2,max(major))))
+      Mpos = cnvobj$pos/1000000
+      plot(Mpos[x],normal,type="l",col=normalcol,lwd=linewidth,xlab="Position (Mb)",ylab="Copy Number",main=mainlab,ylim=c(0,max(2,max(major))))
       if (n>0){
         for (j in 1:n){                                                            
           SNPid = max(a,mydata$SNP.begin[j]):min(b,mydata$SNP.end[j])
-          if (Type[j] == "Gain/Gain" || Type[j]=="Gain/Normal" || Type[j]=="Gain/Loss"){
-            points(cnvobj$pos[SNPid],rep(major[j],length(SNPid)),type="l",col=gaincol,lwd=linewidth)
-            points(rep(cnvobj$pos[mydata$SNP.begin[j]],2),c(mu0,major[j]),type="l",col=gaincol)
-            points(rep(cnvobj$pos[mydata$SNP.end[j]],2),c(mu0,major[j]),type="l",col=gaincol)
+          if (Type[j] == "Gain/Gain" || Type[j]=="Gain/Normal" || Type[j]=="Gain/Loss" || Type[j]=="Gain/Loss_balanced" || Type[j]=="Gain/Loss_unbalanced"){
+            points(Mpos[SNPid],rep(major[j],length(SNPid)),type="l",col=gaincol,lwd=linewidth)
+            points(rep(Mpos[mydata$SNP.begin[j]],2),c(mu0,major[j]),type="l",col=gaincol)
+            points(rep(Mpos[mydata$SNP.end[j]],2),c(mu0,major[j]),type="l",col=gaincol)
           }else if (Type[j]=="Loss/Loss"){
-            points(cnvobj$pos[SNPid],rep(major[j],length(SNPid)),type="l",col=losscol,lwd=linewidth)
-            points(rep(cnvobj$pos[mydata$SNP.begin[j]],2),c(major[j],mu0),type="l",col=losscol)
-            points(rep(cnvobj$pos[mydata$SNP.end[j]],2),c(major[j],mu0),type="l",col=losscol)
+            points(Mpos[SNPid],rep(major[j],length(SNPid)),type="l",col=losscol,lwd=linewidth)
+            points(rep(Mpos[mydata$SNP.begin[j]],2),c(major[j],mu0),type="l",col=losscol)
+            points(rep(Mpos[mydata$SNP.end[j]],2),c(major[j],mu0),type="l",col=losscol)
           }
-          if (Type[j]=="Gain/Loss" || Type[j]=="Normal/Loss" || Type[j]=="Loss/Loss"){
-            points(cnvobj$pos[SNPid],rep(minor[j],length(SNPid)),type="l",col=losscol,lwd=linewidth)
-            points(rep(cnvobj$pos[mydata$SNP.begin[j]],2),c(mu0,minor[j]),type="l",col=losscol)
-            points(rep(cnvobj$pos[mydata$SNP.end[j]],2),c(mu0,minor[j]),type="l",col=losscol)
+          if (Type[j]=="Gain/Loss" || Type[j]=="Gain/Loss_balanced" || Type[j]=="Gain/Loss_unbalanced" || Type[j]=="Normal/Loss" || Type[j]=="Loss/Loss"){
+            points(Mpos[SNPid],rep(minor[j],length(SNPid)),type="l",col=losscol,lwd=linewidth)
+            points(rep(Mpos[mydata$SNP.begin[j]],2),c(mu0,minor[j]),type="l",col=losscol)
+            points(rep(Mpos[mydata$SNP.end[j]],2),c(mu0,minor[j]),type="l",col=losscol)
           }else if (Type[j]=="Gain/Gain"){ 
-            points(cnvobj$pos[SNPid],rep(minor[j],length(SNPid)),type="l",col=gaincol,lwd=linewidth)
-            points(rep(cnvobj$pos[mydata$SNP.begin[j]],2),c(minor[j],mu0),type="l",col=gaincol)
-            points(rep(cnvobj$pos[mydata$SNP.end[j]],2),c(minor[j],mu0),type="l",col=gaincol)
+            points(Mpos[SNPid],rep(minor[j],length(SNPid)),type="l",col=gaincol,lwd=linewidth)
+            points(rep(Mpos[mydata$SNP.begin[j]],2),c(minor[j],mu0),type="l",col=gaincol)
+            points(rep(Mpos[mydata$SNP.end[j]],2),c(minor[j],mu0),type="l",col=gaincol)
           }
         }
       }
@@ -89,7 +90,7 @@ function(mydata, chrid, pos=FALSE, gaincol="red", mainlab=NULL, normalcol="green
       if (n>0){
         for (j in 1:n){
           SNPid = max(a,mydata$SNP.begin[j]):min(b,mydata$SNP.end[j])
-          if (Type[j] == "Gain/Gain" || Type[j]=="Gain/Normal" || Type[j]=="Gain/Loss"){
+          if (Type[j] == "Gain/Gain" || Type[j]=="Gain/Normal" || Type[j]=="Gain/Loss" || Type[j]=="Gain/Loss_balanced" || Type[j]=="Gain/Loss_unbalanced"){
             points(SNPid,rep(major[j],length(SNPid)),type="l",col=gaincol,lwd=linewidth)
             points(rep(mydata$SNP.begin[j],2),c(mu0,major[j]),type="l",col=gaincol)
             points(rep(mydata$SNP.end[j],2),c(mu0,major[j]),type="l",col=gaincol)
@@ -98,7 +99,7 @@ function(mydata, chrid, pos=FALSE, gaincol="red", mainlab=NULL, normalcol="green
             points(rep(mydata$SNP.begin[j],2),c(major[j],mu0),type="l",col=losscol)
             points(rep(mydata$SNP.end[j],2),c(major[j],mu0),type="l",col=losscol)
           }
-          if (Type[j]=="Gain/Loss" || Type[j]=="Normal/Loss" || Type[j]=="Loss/Loss"){
+          if (Type[j]=="Gain/Loss" || Type[j]=="Gain/Loss_balanced" || Type[j]=="Gain/Loss_unbalanced" || Type[j]=="Normal/Loss" || Type[j]=="Loss/Loss"){
             points(SNPid,rep(minor[j],length(SNPid)),type="l",col=losscol,lwd=linewidth)
             points(rep(mydata$SNP.begin[j],2),c(mu0,minor[j]),type="l",col=losscol)
             points(rep(mydata$SNP.end[j],2),c(mu0,minor[j]),type="l",col=losscol)
@@ -111,4 +112,3 @@ function(mydata, chrid, pos=FALSE, gaincol="red", mainlab=NULL, normalcol="green
       }
     } 
 }
-

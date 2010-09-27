@@ -1,4 +1,4 @@
-`plot.cnv2` <-
+plot.cnv2 <-
 function(mydata, mu0, n, Ntest, samplename, chrid, alpha=0.01, gaincol="red", normalcol="green", losscol="blue", elsecol = "grey", linewidth = 3, threshold = 0.1){
 # alpha=0.01; gaincol="red"; normalcol="green"; losscol="blue"; elsecol = "grey"; linewidth = 3
     load(paste(samplename,".Chr",chrid,".pscn.Rdata",sep=""))

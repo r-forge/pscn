@@ -1,5 +1,5 @@
-`create.cnv2d` <-
-function(obs, samplename, chromosome=NULL, pos=NULL, label=NULL, platform="Unknown")
+create.cnv2d <-
+function(obs, samplename, chromosome=NULL, pos=NULL, label=NULL, platform="Unknown",genotype.freq=NULL, LargestCN = 20)
 {        
     dimobs=dim(obs)
     n=dimobs[1]
@@ -15,27 +15,21 @@ function(obs, samplename, chromosome=NULL, pos=NULL, label=NULL, platform="Unkno
     n=length(isvalid)
     nchroms = length(unique(chromosome[isvalid]))
 
-    if(platform=="Illumina" || platform=="Affymetrix" || platform=="Unknown"){
-        logR = obs[isvalid,1]
-        theta = obs[isvalid,2]
-
-        if(max(sum(is.na(logR)), sum(is.na(theta))) > 0){
-          cat("There are ",sum(is.na(logR)), " missing log R values and ", sum(is.na(theta)), " missing b freq values.  Replace by NORMAL values.")
-          logR[is.na(logR)] =0
-          theta[is.na(logR)] =0
-        }
-
-        temp = illumina.getXY(logR,theta)
-        OFFSET = temp$OFFSET
-        AB = illumina.getAB(logR,theta)
-        A=AB$A
-        B=AB$B
-        illumina = list(logR = logR,theta=theta,OFFSET=OFFSET, A=A, B=B) # The R, theta values must be what was originally passed in.
-        intensity=cbind(temp$X, temp$Y)
-      } else {                                                                                                  
-        intensity=obs[isvalid,]
-        illumina = NULL
+    logR = obs[isvalid,1]
+    theta = obs[isvalid,2]
+    if (platform == "Illumina"){  
+      AB = illumina.getAB(logR,theta)
+    }else{
+      AB = affymetrix.getAB(logR, theta)
     }
+    
+    outlier = which((AB$A>LargestCN | AB$B>LargestCN))
+    A = AB$A
+    B = AB$B
+    A[outlier] = LargestCN + rnorm(length(outlier),0,0.1)
+    B[outlier] = LargestCN + rnorm(length(outlier),0,0.1)
+    rawdata = list(logR = logR, theta=B/(A+B), A=A, B=B)
+    intensity=cbind(A, B) 
 
     if(is.null(label)){
       if(is.null(chromosome)){
@@ -44,6 +38,18 @@ function(obs, samplename, chromosome=NULL, pos=NULL, label=NULL, platform="Unkno
         label = paste(samplename,".Chr",chromosome[1],sep="")
       }
     }
+        
+    # Initialize genotype frequencies.
+    if(is.null(genotype.freq)){
+        genotype.freq = matrix(nrow=nrow(intensity),ncol=4, data=0.25)
+    } else {
+        nas = is.na(genotype.freq)
+        rownas = rowSums(nas)
+        rowhasna = which(rownas>0)
+        genotype.freq[rowhasna,] = 0.25
+        genotype.freq = genotype.freq[isvalid,]
+    }
+        
     
     cnvobj <-
         list(intensity = intensity,
@@ -53,8 +59,9 @@ function(obs, samplename, chromosome=NULL, pos=NULL, label=NULL, platform="Unkno
              samplename = samplename,
              label = label,
              statemat = vector("list",4),
-             illumina = illumina,
-             platform = platform  
+             rawdata = rawdata,
+             platform = platform,
+             genotype.freq = genotype.freq   
             )
     cnvobj$statemat[[1]] = matrix(c(2,0,0,0),2,2,byrow=TRUE)
     cnvobj$statemat[[2]] = matrix(c(1,1,1,-1),2,2,byrow=TRUE)
@@ -73,4 +80,3 @@ function(obs, samplename, chromosome=NULL, pos=NULL, label=NULL, platform="Unkno
     
     cnvobj
 }
-
