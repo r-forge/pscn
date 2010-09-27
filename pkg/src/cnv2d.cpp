@@ -20,6 +20,7 @@ class arrayCGH2d {
     Vector<double>  paraMu, estBS;
     Matrix<double>  obs, estPara, paraV, paraSigAA, paraSigAB, 
             paraSigBA, paraSigBB;
+    Matrix<double>  logpt2;  // Prior state probabilities, nx4 matrix.
     arrayCGH2d(Matrix<double>, double, double, double, double, 
     double, Vector<double>, Matrix<double>, Matrix<double>, 
     Matrix<double>, Matrix<double>, Matrix<double>, int, int);
@@ -98,6 +99,7 @@ arrayCGH2d::arrayCGH2d(Matrix<double> obs1, double p1, double a1,
   estPara.newsize(N+1,2);   mixState.newsize(N+1);
   estBS.newsize(N+1);       obs.newsize(N+1,2);
   cenObs.newsize(N+1,2);
+  logpt2.newsize(N+1,4);
   
   
 //NANCY:  
@@ -129,6 +131,8 @@ void   arrayCGH2d::BcmixSmoothEst()
   AddBackBaseline();
 }
 
+
+
 void  arrayCGH2d::FindState()
 {
   int   tmpmin;         double   alpha, beta, z1, z2;
@@ -143,6 +147,14 @@ void  arrayCGH2d::FindState()
     target[2]=GetTarget(aBA, bBA, dBA, z1, z2, detSigBA);
     z1=y1;      z2=y2-2.0*alpha;
     target[3]=GetTarget(aBB, bBB, dBB, z1, z2, detSigBB);
+    
+    target[0] = target[0]-logpt2[t][0];
+    target[1] = target[1]-logpt2[t][1];
+    target[2] = target[2]-logpt2[t][2];
+    target[3] = target[3]-logpt2[t][3];
+    
+    mystream<<"target0="<<target[0]<<", "<<"target0="<<target[1]<<", "<<"target0="<<target[2]<<", "<<"target3="<<target[3]<<"\n";
+    
     for (int i=0; i<4; i++)  if (target[i]<target[tmpmin])  tmpmin=i;
     mixState[t] = tmpmin+1;
   }
@@ -654,13 +666,13 @@ void    cppEstHyper( double *obs, int *mixState, int *n,
                         double *mu, double *v, double *sigAA, 
                         double *sigAB, double *sigBA, double *sigBB, 
                         int *K, int *M, int *niters, int *nBCMIXiters,
-                        double *estSig, double *estBS, int *selectHyper) 
+                        double *estSig, double *estBS, int *selectHyper, double* statep) 
 {
   
     ofstream progstream;
     progstream.open("cppEstHyperprogress.txt"); // Outputs debugging comments into a file.
     
-    progstream << "In cppEstHyper 2.\n";
+    progstream << "In cppEstHyper 3.\n";
     
     
     // -------------- STEP 1: Unpack arguments passed in from R. -------------------
@@ -713,9 +725,19 @@ void    cppEstHyper( double *obs, int *mixState, int *n,
         arr.mixState[i] = mixState[i-1];
     }
   
+    progstream << "Reading in prior state probabilities:\n";
+    
+    arr.logpt2[0][0] = 0; arr.logpt2[0][1] = 0; arr.logpt2[0][2] = 0; arr.logpt2[0][3] = 0;
+    for (int i=1; i<N+1; i++){ 
+        arr.logpt2[i][0] = 2*log(statep[4*(i-1)]);
+        arr.logpt2[i][1] = 2*log(statep[4*(i-1)+1]);
+        arr.logpt2[i][2] = 2*log(statep[4*(i-1)+2]);
+        arr.logpt2[i][3] = 2*log(statep[4*(i-1)+3]);
+        progstream<< "i="<<i<<", "<<arr.logpt2[i][0]<<", "<<arr.logpt2[i][1]<<", "<<arr.logpt2[i][2]<<", "<<arr.logpt2[i][3]<<"\n";
+    }
     
     arr.mystream.open("R_internal.txt");
-    //arr.mystream << "Started arr.mystream...any debugging comments internal to arrayCGH2d object are piped here.\n";
+    arr.mystream << "Started arr.mystream...any debugging comments internal to arrayCGH2d object are piped here.\n";
 
 
    // -------------- STEP 2: Run BCMIX / FindState / SelectAllHyper Loop. -------------------
