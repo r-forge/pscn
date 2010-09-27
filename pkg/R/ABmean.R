@@ -1,9 +1,9 @@
-`ABmean` <-
+ABmean <-
 function(cnvobj, chptall){
   n = length(chptall)-1
  
-  A = cnvobj$illumina$A
-  B = cnvobj$illumina$B
+  A = cnvobj$rawdata$A
+  B = cnvobj$rawdata$B
 
   major.mean = c()
   minor.mean = c()
